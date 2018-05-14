@@ -7,6 +7,37 @@ Oracle Express Edition 11g Release 2 on Ubuntu 18.04 LTS
 
 ## Quick Start
 
+Clone the project
+```
+git clone https://github.com/chavesrodolfo/docker-oracle-xe-11g.git
+```
+Move to the directory
+
+Build an image
+```
+docker build --rm -t oracle-xe .
+```
+
+Save an image
+```
+docker save -o oracle-xe.tar oracle-xe
+```
+
+Load an image (if you need)
+```
+docker load -i oracle-xe.tar
+```
+
+Run a container 
+```
+docker run --name oracle-xe -d -p 1522:22 -p 1521:1521 oracle-xe
+```
+
+Get logs
+```
+docker logs -f oracle-xe
+```
+
 Connect database with following setting:
 ```
 hostname: localhost
@@ -22,30 +53,7 @@ username: XDB
 password: xdb
 ```
 
-Build an image
-```
-docker build --rm -t oracle-xe .
-```
 
-Save an image
-```
-docker save -o oracle-xe.tar oracle-xe
-```
-
-Load an image
-```
-docker load -i oracle-xe.tar
-```
-
-Run a container 
-```
-docker run --name oracle-xe -d -p 1522:22 -p 1521:1521 oracle-xe
-```
-
-Get logs
-```
-docker logs -f oracle-xe
-```
 ## Oracle Setup
 ```
 CREATE TEMPORARY TABLESPACE tbs_temp_01
