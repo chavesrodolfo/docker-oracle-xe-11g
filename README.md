@@ -3,79 +3,73 @@ docker-oracle-xe-11g
 
 Oracle Express Edition 11g Release 2 on Ubuntu 18.04 LTS
 
-This **Dockerfile** is a [trusted build](https://registry.hub.docker.com/u/wnameless/oracle-xe-11g/) of [Docker Registry](https://registry.hub.docker.com/).
-
 ## Installation(with Ubuntu 18.04)
-```
-docker pull wnameless/oracle-xe-11g
-```
-SSH server has been removed since 18.04, please use "docker exec" or 16.04 instead.
-
-## Installation(with Ubuntu 16.04)
-```
-docker pull wnameless/oracle-xe-11g:16.04
-```
 
 ## Quick Start
 
-Run with 1521 port opened:
+Connect database with following setting:
 ```
-docker run -d -p 49161:1521 wnameless/oracle-xe-11g
-```
-
-Run this, if you want the database to be connected remotely:
-```
-docker run -d -p 49161:1521 -e ORACLE_ALLOW_REMOTE=true wnameless/oracle-xe-11g
-```
-
-For performance concern, you may want to disable the disk asynch IO:
-```
-docker run -d -p 49161:1521 -e ORACLE_DISABLE_ASYNCH_IO=true wnameless/oracle-xe-11g
-```
-
-For XDB user, run this:
-```
-docker run -d -p 49161:1521 -p 8080:8080 -e ORACLE_ENABLE_XDB=true wnameless/oracle-xe-11g
-```
-
-Check if localhost:8080 work
-```
-curl -XGET "http://localhost:8080"
-```
-You will show
-```
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-<HTML><HEAD>
-<TITLE>401 Unauthorized</TITLE>
-</HEAD><BODY><H1>Unauthorized</H1>
-</BODY></HTML>
-```
-
-```
-# Login http://localhost:8080 with following credential:
+hostname: localhost
+port: 1521
+sid: xe
+username: system
+password: oracle
+or
+username: sys
+password: oracle
+or
 username: XDB
 password: xdb
 ```
 
-By default, the password verification is disable(password never expired)<br/>
-Connect database with following setting:
+Build an image
 ```
-hostname: localhost
-port: 49161
-sid: xe
-username: system
-password: oracle
+docker build --rm -t oracle-xe .
 ```
 
-Password for SYS & SYSTEM
+Save an image
 ```
-oracle
+docker save -o oracle-xe.tar oracle-xe
 ```
 
-Support custom DB Initialization
+Load an image
 ```
-# Dockerfile
-FROM wnameless/oracle-xe-11g
+docker load -i oracle-xe.tar
+```
 
-ADD init.sql /docker-entrypoint-initdb.d/
+Run a container 
+```
+docker run --name oracle-xe -d -p 1522:22 -p 1521:1521 oracle-xe
+```
+
+Get logs
+```
+docker logs -f oracle-xe
+```
+## Oracle Setup
+```
+CREATE TEMPORARY TABLESPACE tbs_temp_01
+  TEMPFILE 'tbs_temp_01.dbf'
+    SIZE 5M
+    AUTOEXTEND ON;
+    
+    CREATE TABLESPACE tbs_perm_01
+  DATAFILE 'tbs_perm_01.dat' 
+    SIZE 10M
+    REUSE
+    AUTOEXTEND ON NEXT 10M MAXSIZE 200M;
+
+CREATE USER LOCAL_OWNER
+  IDENTIFIED
+  BY pwd
+  DEFAULT TABLESPACE tbs_perm_01
+  TEMPORARY TABLESPACE tbs_temp_01
+  QUOTA 50M on tbs_perm_01;
+  
+grant create session to LOCAL_OWNER;  
+```
+
+Unlock User
+```
+ALTER USER XDB ACCOUNT UNLOCK;
 ```
