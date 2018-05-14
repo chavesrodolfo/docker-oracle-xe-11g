@@ -61,7 +61,7 @@ CREATE TEMPORARY TABLESPACE tbs_temp_01
     SIZE 5M
     AUTOEXTEND ON;
     
-    CREATE TABLESPACE tbs_perm_01
+CREATE TABLESPACE tbs_perm_01
   DATAFILE 'tbs_perm_01.dat' 
     SIZE 10M
     REUSE
@@ -76,6 +76,7 @@ CREATE USER LOCAL_OWNER
   
 grant create session to LOCAL_OWNER;  
 ```
+Now you can use LOCAL_OWNER with password pwd
 
 Unlock User
 ```
