@@ -30,7 +30,45 @@ docker load -i oracle-xe.tar
 
 Run a container 
 ```
-docker run --name oracle-xe -d -p 1522:22 -p 1521:1521 oracle-xe
+docker run --name oracle-xe -d -p 1521:1521 oracle-xe
+```
+
+Run this, if you want the database to be connected remotely:
+```
+docker run --name oracle-xe -d -p 1521:1521 -e ORACLE_ALLOW_REMOTE=true oracle-xe
+```
+
+For performance concern, you may want to disable the disk asynch IO:
+```
+docker run --name oracle-xe -d -p 1521:1521 -e ORACLE_DISABLE_ASYNCH_IO=true oracle-xe
+```
+
+For XDB user, run this:
+```
+docker run --name oracle-xe -d -p 1521:1521 -p 8080:8080 -e ORACLE_ENABLE_XDB=true oracle-xe
+```
+
+Check if localhost:8080 work
+
+curl -XGET "http://localhost:8080"
+You will show
+```
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML><HEAD>
+<TITLE>401 Unauthorized</TITLE>
+</HEAD><BODY><H1>Unauthorized</H1>
+</BODY></HTML>
+```
+
+# Login http://localhost:8080 (Using postman - Basic Auth) with following credential:
+```
+username: XDB
+password: xdb
+```
+
+All options vars command:
+```
+docker run --name oracle-xe -d -p 1522:22 -p 1521:1521 -p 8080:8080 -e ORACLE_ENABLE_XDB=true -e ORACLE_DISABLE_ASYNCH_IO=true -e ORACLE_ALLOW_REMOTE=true oracle-xe
 ```
 
 Get logs
@@ -54,7 +92,7 @@ password: xdb
 ```
 
 
-## Oracle Setup
+## Oracle Schema Setup
 ```
 CREATE TEMPORARY TABLESPACE tbs_temp_01
   TEMPFILE 'tbs_temp_01.dbf'
