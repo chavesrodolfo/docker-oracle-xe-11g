@@ -74,7 +74,9 @@ CREATE USER LOCAL_OWNER
   TEMPORARY TABLESPACE tbs_temp_01
   QUOTA 50M on tbs_perm_01;
   
-grant create session to LOCAL_OWNER;  
+grant create session to LOCAL_OWNER; 
+grant create table to LOCAL_OWNER;
+grant unlimited tablespace to LOCAL_OWNER;
 ```
 Now you can use LOCAL_OWNER with password pwd
 
