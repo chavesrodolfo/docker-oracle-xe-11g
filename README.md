@@ -60,7 +60,7 @@ You will show
 </BODY></HTML>
 ```
 
-# Login http://localhost:8080 (Using postman - Basic Auth) with following credential:
+Login http://localhost:8080 (Using postman - Basic Auth) with following credential:
 ```
 username: XDB
 password: xdb
